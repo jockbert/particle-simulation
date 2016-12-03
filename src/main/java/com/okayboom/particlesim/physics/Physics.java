@@ -4,7 +4,7 @@ public class Physics {
 
 	public static final double NO_COLLISION = -1;
 
-	private double fabs(double n) {
+	private double abs(double n) {
 		return n < 0 ? -n : n;
 	}
 
@@ -22,24 +22,24 @@ public class Physics {
 		if (p.position.x < box.min.x) {
 			p.velocity.x = -p.velocity.x;
 			p.position.x = box.min.x + (box.min.x - p.position.x);
-			gPreassure += 2.0 * fabs(p.velocity.x);
+			gPreassure = p.velocity.x;
 		}
 		if (p.position.x > box.max.x) {
 			p.velocity.x = -p.velocity.x;
 			p.position.x = box.max.x - (p.position.x - box.max.x);
-			gPreassure += 2.0 * fabs(p.velocity.x);
+			gPreassure = p.velocity.x;
 		}
 		if (p.position.y < box.min.y) {
 			p.velocity.y = -p.velocity.y;
 			p.position.y = box.min.y + (box.min.y - p.position.y);
-			gPreassure += 2.0 * fabs(p.velocity.y);
+			gPreassure = p.velocity.y;
 		}
 		if (p.position.y > box.max.y) {
 			p.velocity.y = -p.velocity.y;
 			p.position.y = box.max.y - (p.position.y - box.max.y);
-			gPreassure += 2.0 * fabs(p.velocity.y);
+			gPreassure = p.velocity.y;
 		}
-		return gPreassure;
+		return 2.0 * abs(gPreassure);
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class Physics {
 				c = 1;
 				s = 0;
 			} else {
-				if (fabs(b) > fabs(a)) {
+				if (abs(b) > abs(a)) {
 					tao = -a / b;
 					s = 1 / (Math.sqrt(1 + sqr(tao)));
 					c = s * tao;
