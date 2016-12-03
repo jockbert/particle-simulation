@@ -51,7 +51,8 @@ public class BasicSimulator implements Simulator {
 				double collisionTime = collision.collisionTime;
 				PHY.interact(p1, p2, collisionTime);
 			} else {
-				PHY.euler(p1, 1);
+				p1 = p1.moveUnit();
+				particles.set(i, p1);
 			}
 
 			hasMoved[i] = true;

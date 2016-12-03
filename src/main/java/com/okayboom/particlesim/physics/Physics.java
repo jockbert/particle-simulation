@@ -12,13 +12,6 @@ public class Physics {
 		return n * n;
 	}
 
-	/** Moves the a particle. */
-	public int euler(Particle a, double time_step) {
-		a.position.x = a.position.x + time_step * a.velocity.x;
-		a.position.y = a.position.y + time_step * a.velocity.y;
-		return 0;
-	}
-
 	/**
 	 * wall_collide checks if a particle has exceeded the boundary and returns a
 	 * momentum. Use this momentum to calculate the pressure.
@@ -95,8 +88,8 @@ public class Physics {
 		if (t >= 0) {
 
 			/* Move to impact point */
-			euler(p1, t);
-			euler(p2, t);
+			p1 = p1.move(t);
+			p2 = p2.move(t);
 
 			/* Rotate the coordinate system around p1 */
 			p2temp.position.x = p2.position.x - p1.position.x;
@@ -140,8 +133,8 @@ public class Physics {
 
 			/* Move the balls the remaining time. */
 			c = 1.0 - t;
-			euler(p1, c);
-			euler(p2, c);
+			p1 = p1.move(c);
+			p2 = p2.move(c);
 		}
 	}
 }

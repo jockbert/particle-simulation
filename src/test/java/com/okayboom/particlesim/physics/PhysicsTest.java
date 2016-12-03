@@ -10,21 +10,6 @@ public class PhysicsTest {
 	private static final double DELTA = 1e-10;
 
 	@Test
-	public void testEuler() {
-		Vector position = v(1, -1);
-		Vector velocity = v(2.2, 1.1);
-		double time = 2.0;
-
-		Vector expectedPos = velocity.mult(time).add(position);
-		Particle expectedParticle = new Particle(expectedPos, velocity);
-
-		Particle p = new Particle(position, velocity);
-		new Physics().euler(p, time);
-
-		assertEquals(expectedParticle, p);
-	}
-
-	@Test
 	public void testWallCollideNoCollision() {
 		Box box = new Box(v(-10, -10), v(10, 10));
 
