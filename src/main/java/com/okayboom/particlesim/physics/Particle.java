@@ -1,12 +1,30 @@
 package com.okayboom.particlesim.physics;
 
 public final class Particle {
+	private static final Vector NEG_RADIUS = Vector.v(-1, -1);
+	private static final Vector POS_RADIUS = Vector.v(1, 1);
+
 	public Vector position;
 	public Vector velocity;
 
 	public Particle(Vector position, Vector velocity) {
 		this.position = position;
 		this.velocity = velocity;
+	}
+
+	public Box boundingBox() {
+		Vector positionPlus = position.add(POS_RADIUS);
+		Vector positionMinus = position.add(NEG_RADIUS);
+
+		Vector nextPosition = position.add(velocity);
+
+		Vector nextPositionPlus = nextPosition.add(POS_RADIUS);
+		Vector nextPositionMinus = nextPosition.add(NEG_RADIUS);
+
+		Vector boxMin = positionMinus.min(nextPositionMinus);
+		Vector boxMax = positionPlus.max(nextPositionPlus);
+
+		return Box.box(boxMin, boxMax);
 	}
 
 	@Override

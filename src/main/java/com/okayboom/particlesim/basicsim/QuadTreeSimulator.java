@@ -11,12 +11,9 @@ import com.okayboom.particlesim.collision.SpatialMap;
 import com.okayboom.particlesim.physics.Box;
 import com.okayboom.particlesim.physics.Particle;
 import com.okayboom.particlesim.physics.Physics;
-import com.okayboom.particlesim.physics.Vector;
 
 public class QuadTreeSimulator implements Simulator {
 
-	private static final Vector NEG_RADIUS = Vector.v(-1, -1);
-	private static final Vector POS_RADIUS = Vector.v(1, 1);
 	private static final Physics PHY = new Physics();
 
 	@Override
@@ -45,8 +42,7 @@ public class QuadTreeSimulator implements Simulator {
 
 		for (int i = 0; i < particles.size(); ++i) {
 			Particle particle = particles.get(i);
-			Box bundingBox = particleBoundingBox(particle);
-			map.add(bundingBox, i);
+			map.add(particle.boundingBox(), i);
 		}
 
 		int totalMomentum = 0;
@@ -76,27 +72,10 @@ public class QuadTreeSimulator implements Simulator {
 		return totalMomentum;
 	}
 
-	private Box particleBoundingBox(Particle particle) {
-		Vector position = particle.position;
-
-		Vector positionPlus = position.add(POS_RADIUS);
-		Vector positionMinus = position.add(NEG_RADIUS);
-
-		Vector nextPosition = position.add(particle.velocity);
-
-		Vector nextPositionPlus = nextPosition.add(POS_RADIUS);
-		Vector nextPositionMinus = nextPosition.add(NEG_RADIUS);
-
-		Vector boxMin = positionMinus.min(nextPositionMinus);
-		Vector boxMax = positionPlus.min(nextPositionPlus);
-
-		return Box.box(boxMin, boxMax);
-	}
-
 	private Optional<Collision> findCollision(SpatialMap<Integer> map,
 			Particle p, List<Particle> particles, boolean[] hasMoved) {
 
-		List<Integer> candidates = map.get(particleBoundingBox(p));
+		List<Integer> candidates = map.get(p.boundingBox());
 
 		if (candidates.size() > 100)
 			System.err.println("To many candidates: " + candidates.size());
