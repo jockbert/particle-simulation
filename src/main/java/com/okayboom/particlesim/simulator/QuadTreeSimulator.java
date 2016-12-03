@@ -86,10 +86,11 @@ public class QuadTreeSimulator implements Simulator {
 			if (!hasMoved[candidate]) {
 
 				Particle p2 = particles.get(candidate);
-				double collisionTime = PHY.collide(p, p2);
+				Optional<Double> collisionTime = PHY.collide(p, p2);
 
-				if (collisionTime != Physics.NO_COLLISION)
-					return Optional.of(new Collision(candidate, collisionTime));
+				if (collisionTime.isPresent())
+					return Optional.of(new Collision(candidate, collisionTime
+							.get()));
 
 			}
 		}

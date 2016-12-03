@@ -72,10 +72,10 @@ public class BasicSimulator implements Simulator {
 			if (!hasMoved[j]) {
 
 				Particle p2 = particles.get(j);
-				double collisionTime = PHY.collide(p1, p2);
+				Optional<Double> collisionTime = PHY.collide(p1, p2);
 
-				if (collisionTime != Physics.NO_COLLISION)
-					return Optional.of(new Collision(j, collisionTime));
+				if (collisionTime.isPresent())
+					return Optional.of(new Collision(j, collisionTime.get()));
 
 			}
 		}

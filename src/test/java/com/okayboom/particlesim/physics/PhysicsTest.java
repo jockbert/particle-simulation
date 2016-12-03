@@ -3,6 +3,8 @@ package com.okayboom.particlesim.physics;
 import static com.okayboom.particlesim.physics.Vector.v;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Optional;
+
 import org.junit.Test;
 
 public class PhysicsTest {
@@ -44,12 +46,12 @@ public class PhysicsTest {
 		Particle p1 = new Particle(v(0, 0), v(0, 0));
 		Particle p2 = new Particle(v(-3, -4), v(6, 8));
 
-		double time = new Physics().collide(p2, p1);
+		Optional<Double> time = new Physics().collide(p2, p1);
 
 		// Total distance is traveled during 1 time unit is 10.
 		// Distance between particle centers are 5.
 		// Radius of both particles are 1.
-		assertEquals("Collision at 30% of time step", 0.3, time, DELTA);
+		assertEquals("Collision at 30% of time step", 0.3, time.get(), DELTA);
 	}
 
 	@Test

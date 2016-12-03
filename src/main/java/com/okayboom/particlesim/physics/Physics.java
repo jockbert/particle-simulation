@@ -1,8 +1,8 @@
 package com.okayboom.particlesim.physics;
 
-public class Physics {
+import java.util.Optional;
 
-	public static final double NO_COLLISION = -1;
+public class Physics {
 
 	private double abs(double n) {
 		return n < 0 ? -n : n;
@@ -46,7 +46,7 @@ public class Physics {
 	 * The routine collide returns -1 if there will be no collision this time
 	 * step, otherwise it will return when the collision occurs.
 	 */
-	public double collide(Particle p1, Particle p2) {
+	public Optional<Double> collide(Particle p1, Particle p2) {
 		double a, b, c;
 		double temp, t1, t2;
 
@@ -71,12 +71,12 @@ public class Physics {
 					t2 = temp;
 				}
 				if ((t1 >= 0) & (t1 <= 1))
-					return t1;
+					return Optional.of(t1);
 				else if ((t2 >= 0) & (t2 <= 1))
-					return t2;
+					return Optional.of(t2);
 			}
 		}
-		return -1;
+		return Optional.empty();
 	}
 
 	/** The routine interact moves two particles involved in a collision. */
