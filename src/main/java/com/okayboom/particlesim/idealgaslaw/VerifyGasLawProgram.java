@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import com.okayboom.particlesim.SimSettings;
 import com.okayboom.particlesim.Simulator;
-import com.okayboom.particlesim.basicsim.QuadTreeSimulator;
-import com.okayboom.particlesim.basicsim.TimeMeasureSimulator;
+import com.okayboom.particlesim.simulator.QuadTreeSimulator;
+import com.okayboom.particlesim.simulator.TimeMeasureSimulator;
 
 public class VerifyGasLawProgram {
 

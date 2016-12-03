@@ -1,4 +1,4 @@
-package com.okayboom.particlesim.basicsim;
+package com.okayboom.particlesim.simulator;
 
 public final class Collision {
 	final int otherParticleIndex;

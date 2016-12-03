@@ -1,4 +1,4 @@
-package com.okayboom.particlesim.basicsim;
+package com.okayboom.particlesim.simulator;
 
 import com.okayboom.particlesim.SimResult;
 import com.okayboom.particlesim.SimSettings;

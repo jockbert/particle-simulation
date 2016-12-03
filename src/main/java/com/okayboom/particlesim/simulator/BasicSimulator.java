@@ -1,4 +1,4 @@
-package com.okayboom.particlesim.basicsim;
+package com.okayboom.particlesim.simulator;
 
 import java.util.List;
 import java.util.Optional;
