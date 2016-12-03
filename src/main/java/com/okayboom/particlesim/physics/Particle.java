@@ -63,4 +63,13 @@ public final class Particle {
 	public String toString() {
 		return "Particle [pos=" + position + ", vel=" + velocity + "]";
 	}
+
+	public Particle move(double time_step) {
+		Vector newPosition = position.add(velocity.mult(time_step));
+		return new Particle(newPosition, velocity);
+	}
+
+	public Particle moveUnit() {
+		return new Particle(position.add(velocity), velocity);
+	}
 }
