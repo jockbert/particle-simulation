@@ -1,6 +1,7 @@
-apply plugin: 'java'
+//apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
+apply plugin: 'scala'
 
 mainClassName = 'com.okayboom.particlesim.idealgaslaw.VerifyGasLawProgram'
 
@@ -20,12 +21,14 @@ jar {
 
 repositories {
     mavenCentral()
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
     // Stream utils - https://github.com/poetix/protonpack
     compile group: 'com.codepoetics', name: 'protonpack', version: '1.+'
 
+    // JUnit
     testCompile group: 'junit', name: 'junit', version: '4.+'
 
     // Property based testing.
@@ -35,6 +38,11 @@ dependencies {
 
     // solves logging problem in junit-quickcheck
     testCompile 'org.slf4j:slf4j-simple:+'
+
+    // scala library (and compiler) and ScalaCheck
+    testCompile "org.scala-lang:scala-library:2.11.+"
+    testCompile group: 'org.scalacheck', name: 'scalacheck_2.11', version: '1.13.+'
+    testCompile "com.github.jockbert:scalacheck-junit-integration:0.+"
 }
 
 test {
