@@ -1,25 +1,23 @@
 package com.okayboom.particlesim.physics
 
-import org.scalacheck.Prop.forAll
+import org.junit.Test
 import org.scalacheck.Prop._
 
 import com.kastrull.scalachecktojunit.PropertiesToJUnit
-import org.junit.Test
-
 import com.okayboom.particlesim.physics.PhysicsGen._
-import java.util.Optional
 
 class PhysicsProperties extends PropertiesToJUnit("Physics") {
 
   val particleGen = probableCollisionParticleGen
   val legacy = new LegacyPhysics();
   val novus = new Physics();
-  val box = Box.box(-limit, -limit, limit, limit)
+
+  val smallBox = Box.box(-limit / 2, -limit / 2, limit / 2, limit / 2)
 
   property("wall_collide works just as legacy code") = forAll(particleGen) {
     (a: Particle) =>
-      val legacyPressure: Double = legacy.wall_collide(a, box)
-      val novusPressure: Double = novus.wall_collide(a, box);
+      val legacyPressure: Double = legacy.wall_collide(a.copy(), smallBox)
+      val novusPressure: Double = novus.wall_collide(a.copy(), smallBox);
 
       legacyPressure.equals(novusPressure)
   }

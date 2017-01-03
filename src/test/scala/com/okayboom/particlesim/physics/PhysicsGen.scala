@@ -7,7 +7,7 @@ import com.okayboom.particlesim.physics.Particle._
 
 object PhysicsGen {
 
-  val limit = 10;
+  val limit = 10.0;
 
   def boxedDoubleGen = Gen.chooseNum(-limit, limit)
 

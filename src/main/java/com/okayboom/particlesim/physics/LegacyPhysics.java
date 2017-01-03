@@ -22,24 +22,24 @@ public class LegacyPhysics {
 		if (p.position.x < box.min.x) {
 			p.velocity.x = -p.velocity.x;
 			p.position.x = box.min.x + (box.min.x - p.position.x);
-			gPreassure = p.velocity.x;
+			gPreassure += abs(p.velocity.x);
 		}
 		if (p.position.x > box.max.x) {
 			p.velocity.x = -p.velocity.x;
 			p.position.x = box.max.x - (p.position.x - box.max.x);
-			gPreassure = p.velocity.x;
+			gPreassure += abs(p.velocity.x);
 		}
 		if (p.position.y < box.min.y) {
 			p.velocity.y = -p.velocity.y;
 			p.position.y = box.min.y + (box.min.y - p.position.y);
-			gPreassure = p.velocity.y;
+			gPreassure += abs(p.velocity.y);
 		}
 		if (p.position.y > box.max.y) {
 			p.velocity.y = -p.velocity.y;
 			p.position.y = box.max.y - (p.position.y - box.max.y);
-			gPreassure = p.velocity.y;
+			gPreassure += abs(p.velocity.y);
 		}
-		return 2.0 * abs(gPreassure);
+		return 2.0 * gPreassure;
 	}
 
 	/**
