@@ -7,12 +7,12 @@ import com.okayboom.particlesim.SimResult;
 import com.okayboom.particlesim.SimSettings;
 import com.okayboom.particlesim.Simulator;
 import com.okayboom.particlesim.physics.Box;
+import com.okayboom.particlesim.physics.LegacyPhysics;
 import com.okayboom.particlesim.physics.Particle;
-import com.okayboom.particlesim.physics.Physics;
 
 public class BasicSimulator implements Simulator {
 
-	private static final Physics PHY = new Physics();
+	private static final LegacyPhysics PHY = new LegacyPhysics();
 
 	@Override
 	public SimResult simulate(final SimSettings settings) {

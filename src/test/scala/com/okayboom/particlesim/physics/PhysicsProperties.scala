@@ -20,9 +20,12 @@ class PhysicsProperties extends PropertiesToJUnit("Physics") {
       val novusA = a.copy();
 
       val legacyPressure: Double = legacy.wall_collide(legacyA, smallBox)
-      val novusPressure: Double = novus.wall_collide(novusA, smallBox);
+      val wallHit = novus.wall_collide(novusA, smallBox);
 
-      (novusA ?= legacyA) && (novusPressure ?= legacyPressure)
+      val novusPressure = wallHit.pressure.orElse(0.0);
+      val novusA2 = wallHit.particle
+
+      (novusA2 ?= legacyA) && (novusPressure ?= legacyPressure)
   }
 
   property("collide works just as legacy code") = forAll(particleGen, particleGen) {

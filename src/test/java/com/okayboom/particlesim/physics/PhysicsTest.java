@@ -19,7 +19,7 @@ public class PhysicsTest {
 		Vector velocity = v(5, 0);
 		Particle p = new Particle(position, velocity);
 
-		double result = new Physics().wall_collide(p, box);
+		double result = new LegacyPhysics().wall_collide(p, box);
 
 		assertEquals(result, 0, DELTA);
 		assertEquals("Velocity as before", velocity, p.velocity);
@@ -34,7 +34,7 @@ public class PhysicsTest {
 		Vector velocity = v(5, 0);
 		Particle p = new Particle(position, velocity);
 
-		double result = new Physics().wall_collide(p, box);
+		double result = new LegacyPhysics().wall_collide(p, box);
 
 		assertEquals(result, 2 * velocity.abs(), DELTA);
 		assertEquals("Velocity reversed", v(-5, 0), p.velocity);

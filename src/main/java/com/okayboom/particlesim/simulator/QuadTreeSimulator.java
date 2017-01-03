@@ -9,12 +9,12 @@ import com.okayboom.particlesim.Simulator;
 import com.okayboom.particlesim.collision.QuadTree;
 import com.okayboom.particlesim.collision.SpatialMap;
 import com.okayboom.particlesim.physics.Box;
+import com.okayboom.particlesim.physics.LegacyPhysics;
 import com.okayboom.particlesim.physics.Particle;
-import com.okayboom.particlesim.physics.Physics;
 
 public class QuadTreeSimulator implements Simulator {
 
-	private static final Physics PHY = new Physics();
+	private static final LegacyPhysics PHY = new LegacyPhysics();
 
 	@Override
 	public SimResult simulate(final SimSettings settings) {

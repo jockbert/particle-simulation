@@ -1,8 +1,30 @@
 package com.okayboom.particlesim.physics;
 
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 public class Physics {
+
+	private static final double NO_COLLISION = 0.0;
+
+	static class WallHit {
+
+		final OptionalDouble pressure;
+		final Particle particle;
+
+		public WallHit(Particle p, OptionalDouble pressure) {
+			particle = p;
+			this.pressure = pressure;
+		}
+
+		public static WallHit noHit(Particle p) {
+			return new WallHit(p, OptionalDouble.empty());
+		}
+
+		public static WallHit hit(Particle p, double pressure) {
+			return new WallHit(p, OptionalDouble.of(pressure));
+		}
+	}
 
 	private double abs(double n) {
 		return n < 0 ? -n : n;
@@ -16,8 +38,9 @@ public class Physics {
 	 * wall_collide checks if a particle has exceeded the boundary and returns a
 	 * momentum. Use this momentum to calculate the pressure.
 	 */
-	public double wall_collide(Particle p, Box box) {
-		double gPreassure = 0.0;
+	public WallHit wall_collide(Particle p, Box box) {
+
+		double gPreassure = NO_COLLISION;
 
 		if (p.position.x < box.min.x) {
 			p.velocity.x = -p.velocity.x;
@@ -40,7 +63,7 @@ public class Physics {
 			gPreassure += abs(p.velocity.y);
 		}
 
-		return 2.0 * gPreassure;
+		return NO_COLLISION == gPreassure ? WallHit.noHit(p) : WallHit.hit(p, 2.0 * gPreassure);
 	}
 
 	/**
@@ -51,13 +74,10 @@ public class Physics {
 		double a, b, c;
 		double temp, t1, t2;
 
-		a = sqr(p1.velocity.x - p2.velocity.x)
-				+ sqr(p1.velocity.y - p2.velocity.y);
-		b = 2 * ((p1.position.x - p2.position.x)
-				* (p1.velocity.x - p2.velocity.x) + (p1.position.y - p2.position.y)
-				* (p1.velocity.y - p2.velocity.y));
-		c = sqr(p1.position.x - p2.position.x)
-				+ sqr(p1.position.y - p2.position.y) - 4 * 1 * 1;
+		a = sqr(p1.velocity.x - p2.velocity.x) + sqr(p1.velocity.y - p2.velocity.y);
+		b = 2 * ((p1.position.x - p2.position.x) * (p1.velocity.x - p2.velocity.x)
+				+ (p1.position.y - p2.position.y) * (p1.velocity.y - p2.velocity.y));
+		c = sqr(p1.position.x - p2.position.x) + sqr(p1.position.y - p2.position.y) - 4 * 1 * 1;
 
 		if (a != 0.0) {
 			temp = sqr(b) - 4 * a * c;
