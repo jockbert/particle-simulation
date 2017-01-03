@@ -12,6 +12,10 @@ public final class Particle {
 		this.velocity = velocity;
 	}
 
+	public static final Particle p(Vector position, Vector velocity) {
+		return new Particle(position, velocity);
+	}
+
 	public Box boundingBox() {
 		Vector positionPlus = position.add(POS_RADIUS);
 		Vector positionMinus = position.add(NEG_RADIUS);
@@ -71,5 +75,9 @@ public final class Particle {
 
 	public Particle moveUnit() {
 		return new Particle(position.add(velocity), velocity);
+	}
+
+	public Particle copy() {
+		return p(position.copy(), velocity.copy());
 	}
 }

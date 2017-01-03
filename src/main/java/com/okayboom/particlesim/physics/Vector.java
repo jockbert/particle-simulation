@@ -66,4 +66,8 @@ public final class Vector {
 	public Vector sub(Vector other) {
 		return v(x - (other.x), y - (other.y));
 	}
+
+	public Vector copy() {
+		return v(x, y);
+	}
 }
