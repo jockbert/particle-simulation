@@ -16,10 +16,13 @@ class PhysicsProperties extends PropertiesToJUnit("Physics") {
 
   property("wall_collide works just as legacy code") = forAll(particleGen) {
     (a: Particle) =>
-      val legacyPressure: Double = legacy.wall_collide(a.copy(), smallBox)
-      val novusPressure: Double = novus.wall_collide(a.copy(), smallBox);
+      val legacyA = a.copy();
+      val novusA = a.copy();
 
-      legacyPressure.equals(novusPressure)
+      val legacyPressure: Double = legacy.wall_collide(legacyA, smallBox)
+      val novusPressure: Double = novus.wall_collide(novusA, smallBox);
+
+      (novusA ?= legacyA) && (novusPressure ?= legacyPressure)
   }
 
   property("collide works just as legacy code") = forAll(particleGen, particleGen) {
@@ -28,7 +31,7 @@ class PhysicsProperties extends PropertiesToJUnit("Physics") {
       val legacyTime = legacy.collide(a, b)
       val novusTime = novus.collide(a, b)
 
-      legacyTime.equals(novusTime)
+      novusTime ?= legacyTime
   }
 
   property("interact works just as legacy code") = forAll(particleGen, particleGen, timeGen) {
@@ -43,7 +46,7 @@ class PhysicsProperties extends PropertiesToJUnit("Physics") {
       legacy.interact(aLegacy, bLegacy, time)
       novus.interact(aNovus, bNovus, time)
 
-      aLegacy.equals(aNovus) && bLegacy.equals(bNovus)
+      (aNovus ?= aLegacy) && (bNovus ?= bLegacy)
   }
 
   @Test
