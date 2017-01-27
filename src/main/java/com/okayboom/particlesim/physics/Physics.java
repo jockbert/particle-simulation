@@ -40,30 +40,31 @@ public class Physics {
 	 */
 	public WallHit wall_collide(Particle p, Box box) {
 
+		Particle q = p.copy();
 		double gPreassure = NO_COLLISION;
 
-		if (p.position.x < box.min.x) {
-			p.velocity.x = -p.velocity.x;
-			p.position.x = box.min.x + (box.min.x - p.position.x);
-			gPreassure += abs(p.velocity.x);
+		if (q.position.x < box.min.x) {
+			q.velocity.x = -q.velocity.x;
+			q.position.x = box.min.x + (box.min.x - q.position.x);
+			gPreassure += abs(q.velocity.x);
 		}
-		if (p.position.x > box.max.x) {
-			p.velocity.x = -p.velocity.x;
-			p.position.x = box.max.x - (p.position.x - box.max.x);
-			gPreassure += abs(p.velocity.x);
+		if (q.position.x > box.max.x) {
+			q.velocity.x = -q.velocity.x;
+			q.position.x = box.max.x - (q.position.x - box.max.x);
+			gPreassure += abs(q.velocity.x);
 		}
-		if (p.position.y < box.min.y) {
-			p.velocity.y = -p.velocity.y;
-			p.position.y = box.min.y + (box.min.y - p.position.y);
-			gPreassure += abs(p.velocity.y);
+		if (q.position.y < box.min.y) {
+			q.velocity.y = -q.velocity.y;
+			q.position.y = box.min.y + (box.min.y - q.position.y);
+			gPreassure += abs(q.velocity.y);
 		}
-		if (p.position.y > box.max.y) {
-			p.velocity.y = -p.velocity.y;
-			p.position.y = box.max.y - (p.position.y - box.max.y);
-			gPreassure += abs(p.velocity.y);
+		if (q.position.y > box.max.y) {
+			q.velocity.y = -q.velocity.y;
+			q.position.y = box.max.y - (q.position.y - box.max.y);
+			gPreassure += abs(q.velocity.y);
 		}
 
-		return NO_COLLISION == gPreassure ? WallHit.noHit(p) : WallHit.hit(p, 2.0 * gPreassure);
+		return NO_COLLISION == gPreassure ? WallHit.noHit(q) : WallHit.hit(q, 2.0 * gPreassure);
 	}
 
 	/**
