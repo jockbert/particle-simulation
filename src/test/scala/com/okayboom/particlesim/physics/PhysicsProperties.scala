@@ -8,6 +8,19 @@ import com.okayboom.particlesim.physics.PhysicsGen._
 
 class PhysicsProperties extends PropertiesToJUnit("Physics") {
 
+  type OD = java.util.Optional[java.lang.Double]
+
+  def approxEq(expected: OD, actual: OD, delta: Double) = {
+    val result = if (expected.isPresent() && actual.isPresent()) {
+      val e = expected.get()
+      val a = actual.get()
+      (e - a).abs <= delta;
+    } else !expected.isPresent() && !actual.isPresent()
+
+    if (!result) println("Got " + actual + " but expected " + expected)
+    result
+  }
+
   val particleGen = probableCollisionParticleGen
   val legacy = new LegacyPhysics();
   val novus = new Physics();
@@ -34,7 +47,7 @@ class PhysicsProperties extends PropertiesToJUnit("Physics") {
       val legacyTime = legacy.collide(a, b)
       val novusTime = novus.collide(a, b)
 
-      novusTime ?= legacyTime
+      approxEq(novusTime, legacyTime, 10e-10)
   }
 
   property("interact works just as legacy code") = forAll(particleGen, particleGen, timeGen) {
