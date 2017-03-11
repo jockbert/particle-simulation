@@ -80,4 +80,10 @@ public final class Particle {
 	public Particle copy() {
 		return p(position.copy(), velocity.copy());
 	}
+
+	public Particle subtract(Particle other) {
+		Vector diffVelocity = velocity.sub(other.velocity);
+		Vector diffPosition = position.sub(other.position);
+		return Particle.p(diffPosition, diffVelocity);
+	}
 }

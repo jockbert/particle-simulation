@@ -79,16 +79,15 @@ public class Physics {
 	public Optional<Double> collide(Particle p1, Particle p2) {
 
 		// Solving polynomial of when in time there are 2 radiuses between
-		// particles, giving allowed time range of [0,1], e.g. the range of the
-		// time step. Selects the first occurrence in time if there are two.
+		// particles. Filtering out roots (solutions) not in allowed time range
+		// of [0,1], e.g. the range of the time step. Selects the first
+		// occurrence in time if there are two.
 
-		Vector deltaVelocity = p1.velocity.sub(p2.velocity);
-		Vector deltaPosition = p1.position.sub(p2.position);
-		Particle delta = Particle.p(deltaPosition, deltaVelocity);
+		Particle diff = p1.subtract(p2);
 
-		double a = delta.velocity.absSqr();
-		double b = delta.position.x * delta.velocity.x + delta.position.y * delta.velocity.y;
-		double c = delta.position.absSqr() - 4;
+		double a = diff.velocity.absSqr();
+		double b = diff.position.x * diff.velocity.x + diff.position.y * diff.velocity.y;
+		double c = diff.position.absSqr() - 4;
 
 		Predicate<Double> isWithinTimeStep = r -> r >= 0 && r <= 1;
 
