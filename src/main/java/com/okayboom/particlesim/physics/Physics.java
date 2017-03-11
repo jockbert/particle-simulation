@@ -1,8 +1,12 @@
 package com.okayboom.particlesim.physics;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import com.codepoetics.protonpack.StreamUtils;
 
 public class Physics {
 
@@ -69,6 +73,71 @@ public class Physics {
 	}
 
 	/**
+	 * Polynomial on the form p(t) = a * t^2 + b * t + c
+	 */
+	static final class SecondDegPolynomial {
+		private final double a;
+		private final double b;
+		private final double c;
+
+		SecondDegPolynomial(double a, double b, double c) {
+			this.a = a;
+			this.b = b;
+			this.c = c;
+		}
+
+		static SecondDegPolynomial create(double a, double b, double c) {
+			return new SecondDegPolynomial(a, b, c);
+		}
+	}
+
+	static public class PolySolver {
+
+		static Stream<Double> findRealRoots(double a, double b, double c) {
+			SecondDegPolynomial poly = SecondDegPolynomial.create(a, b, c);
+			return PolySolver.create().findRealRoots(poly);
+		}
+
+		static PolySolver create() {
+			return new PolySolver();
+		}
+
+		/**
+		 *
+		 * Polynomial to solve: <code>0 = a * t^2 + b * t + c </code> <br>
+		 * Found roots are Real numbers on the form:
+		 * <code>t = -b/a +- sqrt((b/a)^2-c/a)</code>
+		 *
+		 *
+		 * @param poly
+		 * @return
+		 */
+		Stream<Double> findRealRoots(SecondDegPolynomial poly) {
+			return StreamUtils.ofSingleNullable(poly).filter(this::isFreeOfDivByZeroProblem)
+					.filter(this::isPositiveSqrt).flatMap(this::rootsOf);
+		}
+
+		private boolean isFreeOfDivByZeroProblem(SecondDegPolynomial poly) {
+			return poly.a != 0;
+		}
+
+		private double partInSqrt(SecondDegPolynomial poly) {
+			double term1 = poly.b / poly.a;
+			return term1 * term1 - poly.c / poly.a;
+		}
+
+		private boolean isPositiveSqrt(SecondDegPolynomial poly) {
+			return partInSqrt(poly) >= 0;
+		}
+
+		private Stream<Double> rootsOf(SecondDegPolynomial poly) {
+			double term1 = -poly.b / poly.a;
+			double term2 = Math.sqrt(partInSqrt(poly));
+			return Arrays.asList(term1 - term2, term1 + term2).stream();
+		}
+	}
+
+	/**
 	 * The routine collide returns no value if there will be no collision this
 	 * time step, otherwise it will return when in time the collision occurs.
 	 */
@@ -82,29 +151,9 @@ public class Physics {
 		double b = q.position.x * q.velocity.x + q.position.y * q.velocity.y;
 		double c = sqr(q.position.x) + sqr(q.position.y) - 4;
 
-		boolean hasExactSameVelocity = a == 0.0;
-		if (hasExactSameVelocity) {
-			// distance is stationary over time and will never collide.
-			return Optional.empty();
-		}
+		Predicate<Double> isWithinTimeStep = r -> r >= 0 && r <= 1;
 
-		double temp = sqr(b / a) - c / a;
-		boolean hasSqrtSolution = temp >= 0;
-		if (!hasSqrtSolution) { // polynomial has no real solution
-			Optional.empty();
-		}
-
-		temp = Math.sqrt(temp);
-		double t1 = -b / a + temp;
-		double t2 = -b / a - temp;
-
-		double tMin = Math.min(t1, t2);
-		double tMax = Math.max(t1, t2); // StreamUtils.ofNullable(t1, t2);
-		if ((tMin >= 0) & (tMin <= 1))
-			return Optional.of(tMin);
-		else if ((tMax >= 0) & (tMax <= 1))
-			return Optional.of(tMax);
-		return Optional.empty();
+		return PolySolver.findRealRoots(a, b, c).filter(isWithinTimeStep).sorted().findFirst();
 	}
 
 	/** The routine interact moves two particles involved in a collision. */
