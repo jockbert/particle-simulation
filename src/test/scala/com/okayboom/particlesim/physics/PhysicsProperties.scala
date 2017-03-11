@@ -47,7 +47,7 @@ class PhysicsProperties extends PropertiesToJUnit("Physics") {
       val legacyTime = legacy.collide(a, b)
       val novusTime = novus.collide(a, b)
 
-      approxEq(novusTime, legacyTime, 10e-10)
+      approxEq(legacyTime, novusTime, 10e-10)
   }
 
   property("interact works just as legacy code") = forAll(particleGen, particleGen, timeGen) {

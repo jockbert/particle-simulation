@@ -2,6 +2,7 @@ package com.okayboom.particlesim.physics;
 
 import java.util.Optional;
 import java.util.OptionalDouble;
+import java.util.function.Predicate;
 
 public class Physics {
 
@@ -68,36 +69,41 @@ public class Physics {
 	}
 
 	/**
-	 * The routine collide returns -1 if there will be no collision this time
-	 * step, otherwise it will return when the collision occurs.
+	 * The routine collide returns no value if there will be no collision this
+	 * time step, otherwise it will return when in time the collision occurs.
 	 */
 	public Optional<Double> collide(Particle p1, Particle p2) {
-		double a, b, c;
-		double temp, t1, t2;
 
-		a = sqr(p1.velocity.x - p2.velocity.x) + sqr(p1.velocity.y - p2.velocity.y);
-		b = 2 * ((p1.position.x - p2.position.x) * (p1.velocity.x - p2.velocity.x)
-				+ (p1.position.y - p2.position.y) * (p1.velocity.y - p2.velocity.y));
-		c = sqr(p1.position.x - p2.position.x) + sqr(p1.position.y - p2.position.y) - 4 * 1 * 1;
+		Vector deltaVelocity = p1.velocity.sub(p2.velocity);
+		Vector deltaPosition = p1.position.sub(p2.position);
+		Particle q = Particle.p(deltaPosition, deltaVelocity);
 
-		if (a != 0.0) {
-			temp = sqr(b) - 4 * a * c;
-			if (temp >= 0) {
-				temp = Math.sqrt(temp);
-				t1 = (-b + temp) / (2 * a);
-				t2 = (-b - temp) / (2 * a);
+		double a = sqr(q.velocity.x) + sqr(q.velocity.y);
+		double b = q.position.x * q.velocity.x + q.position.y * q.velocity.y;
+		double c = sqr(q.position.x) + sqr(q.position.y) - 4;
 
-				if (t1 > t2) {
-					temp = t1;
-					t1 = t2;
-					t2 = temp;
-				}
-				if ((t1 >= 0) & (t1 <= 1))
-					return Optional.of(t1);
-				else if ((t2 >= 0) & (t2 <= 1))
-					return Optional.of(t2);
-			}
+		boolean hasExactSameVelocity = a == 0.0;
+		if (hasExactSameVelocity) {
+			// distance is stationary over time and will never collide.
+			return Optional.empty();
 		}
+
+		double temp = sqr(b / a) - c / a;
+		boolean hasSqrtSolution = temp >= 0;
+		if (!hasSqrtSolution) { // polynomial has no real solution
+			Optional.empty();
+		}
+
+		temp = Math.sqrt(temp);
+		double t1 = -b / a + temp;
+		double t2 = -b / a - temp;
+
+		double tMin = Math.min(t1, t2);
+		double tMax = Math.max(t1, t2); // StreamUtils.ofNullable(t1, t2);
+		if ((tMin >= 0) & (tMin <= 1))
+			return Optional.of(tMin);
+		else if ((tMax >= 0) & (tMax <= 1))
+			return Optional.of(tMax);
 		return Optional.empty();
 	}
 
