@@ -51,8 +51,13 @@ public final class Vector {
 		return new Vector(x + other.x, y + other.y);
 	}
 
+	/** Equivalent to <code>x * x + y * y</code> */
+	public double absSqr() {
+		return x * x + y * y;
+	}
+
 	public double abs() {
-		return Math.sqrt(x * x + y * y);
+		return Math.sqrt(absSqr());
 	}
 
 	public Vector min(Vector v2) {

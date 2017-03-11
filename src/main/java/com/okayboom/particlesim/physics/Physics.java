@@ -80,11 +80,11 @@ public class Physics {
 
 		Vector deltaVelocity = p1.velocity.sub(p2.velocity);
 		Vector deltaPosition = p1.position.sub(p2.position);
-		Particle q = Particle.p(deltaPosition, deltaVelocity);
+		Particle delta = Particle.p(deltaPosition, deltaVelocity);
 
-		double a = sqr(q.velocity.x) + sqr(q.velocity.y);
-		double b = q.position.x * q.velocity.x + q.position.y * q.velocity.y;
-		double c = sqr(q.position.x) + sqr(q.position.y) - 4;
+		double a = delta.velocity.absSqr();
+		double b = delta.position.x * delta.velocity.x + delta.position.y * delta.velocity.y;
+		double c = delta.position.absSqr() - 4;
 
 		Predicate<Double> isWithinTimeStep = r -> r >= 0 && r <= 1;
 
