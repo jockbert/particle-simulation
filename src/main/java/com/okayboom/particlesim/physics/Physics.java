@@ -1,12 +1,8 @@
 package com.okayboom.particlesim.physics;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
-
-import com.codepoetics.protonpack.StreamUtils;
 
 public class Physics {
 
@@ -33,10 +29,6 @@ public class Physics {
 
 	private double abs(double n) {
 		return n < 0 ? -n : n;
-	}
-
-	private double sqr(double n) {
-		return n * n;
 	}
 
 	/**
@@ -78,10 +70,10 @@ public class Physics {
 	 */
 	public Optional<Double> collide(Particle p1, Particle p2) {
 
-		// Solving polynomial of when in time there are 2 radiuses between
-		// particles. Filtering out roots (solutions) not in allowed time range
-		// of [0,1], e.g. the range of the time step. Selects the first
-		// occurrence in time if there are two.
+		// Solving polynomial of when in time there are 2 radius distances
+		// between particles, i.e. collisions. Filtering out roots (solutions)
+		// not in allowed time range of [0,1], i.e. the range of the time step.
+		// Selects the first occurrence in time if there are two.
 
 		Particle diff = p1.subtract(p2);
 
@@ -119,11 +111,11 @@ public class Physics {
 			} else {
 				if (abs(b) > abs(a)) {
 					tao = -a / b;
-					s = 1 / (Math.sqrt(1 + sqr(tao)));
+					s = 1 / (Math.sqrt(1 + tao * tao));
 					c = s * tao;
 				} else {
 					tao = -b / a;
-					c = 1 / (Math.sqrt(1 + sqr(tao)));
+					c = 1 / (Math.sqrt(1 + tao * tao));
 					s = c * tao;
 				}
 			}

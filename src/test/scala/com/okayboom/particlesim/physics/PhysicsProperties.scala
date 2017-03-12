@@ -6,28 +6,34 @@ import org.scalacheck.Prop._
 import com.kastrull.scalachecktojunit.PropertiesToJUnit
 import com.okayboom.particlesim.physics.PhysicsGen._
 
+import scala.language.implicitConversions
+
 class PhysicsProperties extends PropertiesToJUnit("Physics") {
 
-  type OD = java.util.Optional[java.lang.Double]
+  type JavaOpt = java.util.Optional[java.lang.Double]
+  type ScalaOpt = Option[Double]
 
-  def approxEq(expected: OD, actual: OD, delta: Double) = {
-    val result = if (expected.isPresent() && actual.isPresent()) {
-      val e = expected.get()
-      val a = actual.get()
-      (e - a).abs <= delta;
-    } else !expected.isPresent() && !actual.isPresent()
+  implicit def javaToScalaOpt(opt: JavaOpt): ScalaOpt =
+    if (opt.isPresent) Some(opt.get())
+    else None
 
-    if (!result) println("Got " + actual + " but expected " + expected)
-    result
+  def approxEq(expected: ScalaOpt, actual: ScalaOpt, delta: Double) = {
+    val doEqual = (expected, actual) match {
+      case (Some(e), Some(a)) => (e - a).abs <= delta
+      case (None, None)       => true
+      case _                  => false
+    }
+    if (!doEqual) println(s"Expected $expected but got $actual")
+    doEqual
   }
 
-  val particleGen = probableCollisionParticleGen
+  val particles = probableCollisionParticleGen
   val legacy = new LegacyPhysics();
   val novus = new Physics();
 
   val smallBox = Box.box(-limit / 2, -limit / 2, limit / 2, limit / 2)
 
-  property("wall_collide works just as legacy code") = forAll(particleGen) {
+  property("wall_collide works just as legacy code") = forAll(particles) {
     (a: Particle) =>
       val legacyA = a.copy();
       val novusA = a.copy();
@@ -41,16 +47,16 @@ class PhysicsProperties extends PropertiesToJUnit("Physics") {
       (novusA2 ?= legacyA) && (novusPressure ?= legacyPressure)
   }
 
-  property("collide works just as legacy code") = forAll(particleGen, particleGen) {
+  property("collide works just as in legacy code") = forAll(particles, particles) {
     (a: Particle, b: Particle) =>
 
       val legacyTime = legacy.collide(a, b)
       val novusTime = novus.collide(a, b)
 
-      approxEq(legacyTime, novusTime, 10e-10)
+      approxEq(legacyTime, novusTime, 10e-15)
   }
 
-  property("interact works just as legacy code") = forAll(particleGen, particleGen, timeGen) {
+  property("interact works just as legacy code") = forAll(particles, particles, timeGen) {
     (a: Particle, b: Particle, time: Double) =>
 
       val aLegacy = a.copy();
