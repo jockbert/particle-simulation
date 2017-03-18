@@ -6,6 +6,9 @@ import org.scalacheck.Prop._
 import com.kastrull.scalachecktojunit.PropertiesToJUnit
 import com.okayboom.particlesim.physics.PhysicsGen._
 
+import com.okayboom.particlesim.physics.Particle._
+import com.okayboom.particlesim.physics.Vector._
+
 import scala.language.implicitConversions
 
 class PhysicsProperties extends PropertiesToJUnit("Physics") {
@@ -47,13 +50,14 @@ class PhysicsProperties extends PropertiesToJUnit("Physics") {
       (novusA2 ?= legacyParticle) && (novusPressure ?= legacyPressure)
   }
 
-  property("collide works just as in legacy code") = forAll(particles, particles) {
-    (a: Particle, b: Particle) =>
+  property("collide works just as in legacy code") = forAll(particles, particles)(collideWorksAsLegacy)
 
-      val legacyTime = legacy.collide(a, b)
-      val novusTime = novus.collide(a, b)
+  def collideWorksAsLegacy(a: Particle, b: Particle) = {
 
-      approxEq(legacyTime, novusTime, 10e-15)
+    val legacyTime = legacy.collide(a, b)
+    val novusTime = novus.collide(a, b)
+
+    approxEq(legacyTime, novusTime, 10e-15)
   }
 
   property("interact works just as legacy code") = forAll(particles, particles, timeGen) {
@@ -73,4 +77,18 @@ class PhysicsProperties extends PropertiesToJUnit("Physics") {
 
   @Test
   def test() = testScalaCheckProperies()
+
+  @Test
+  def collideWorksAsLegacyBug_singleSolution() {
+    val a = p(v(-1.0, 0.0), v(-20.0, 20.0));
+    val b = p(v(1.0, 10.0), v(-20.0, -2.0));
+    assert(collideWorksAsLegacy(a, b));
+  }
+
+  @Test
+  def collideWorksAsLegacyBug_collideAtTimeZero() {
+    val a = p(v(-1.0, -1.0), v(20.0, 2.0));
+    val b = p(v(1.0, -1.0), v(-11.943185085924132, -15.765249773787602));
+    assert(collideWorksAsLegacy(a, b));
+  }
 }

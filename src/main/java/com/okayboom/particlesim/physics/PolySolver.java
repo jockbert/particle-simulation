@@ -25,7 +25,7 @@ public class PolySolver {
 			return new SecondDegPolynomial(a, b, c);
 		}
 	}
-	
+
 	/** Polynomial to solve: <code>0 = a * t^2 + b * t + c </code> */
 	static Stream<Double> findRealRoots(double a, double b, double c) {
 		SecondDegPolynomial poly = SecondDegPolynomial.create(a, b, c);
@@ -41,12 +41,13 @@ public class PolySolver {
 	 * Found roots are Real numbers on the form:
 	 * <code>t = -b/a +- sqrt((b/a)^2-c/a)</code>
 	 *
-	 * @param poly The polynomial to solve
+	 * @param poly
+	 *            The polynomial to solve
 	 * @return
 	 */
 	Stream<Double> findRealRoots(SecondDegPolynomial poly) {
-		return StreamUtils.ofSingleNullable(poly).filter(this::isFreeOfDivByZeroProblem)
-				.filter(this::isPositiveSqrt).flatMap(this::rootsOf);
+		return StreamUtils.ofSingleNullable(poly).filter(this::isFreeOfDivByZeroProblem).filter(this::isPositiveSqrt)
+				.flatMap(this::rootsOf);
 	}
 
 	private boolean isFreeOfDivByZeroProblem(SecondDegPolynomial poly) {
@@ -58,13 +59,14 @@ public class PolySolver {
 	}
 
 	private Stream<Double> rootsOf(SecondDegPolynomial poly) {
-		double term1 = -poly.b / poly.a;
-		double term2 = Math.sqrt(partInSqrt(poly));
-		return Arrays.asList(term1 - term2, term1 + term2).stream();
+		double quota = -poly.b / poly.a;
+		double sqrt = Math.sqrt(partInSqrt(poly));
+		double root1 = quota * (1 - sqrt);
+		double root2 = quota * (1 + sqrt);
+		return Arrays.asList(root1, root2).stream();
 	}
 
 	private double partInSqrt(SecondDegPolynomial poly) {
-		double term1 = poly.b / poly.a;
-		return term1 * term1 - poly.c / poly.a;
+		return 1 - poly.c * poly.a / poly.b / poly.b;
 	}
 }
