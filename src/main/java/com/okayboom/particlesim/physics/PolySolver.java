@@ -3,8 +3,6 @@ package com.okayboom.particlesim.physics;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import com.codepoetics.protonpack.StreamUtils;
-
 public class PolySolver {
 
 	/**
@@ -46,27 +44,28 @@ public class PolySolver {
 	 * @return
 	 */
 	Stream<Double> findRealRoots(SecondDegPolynomial poly) {
-		return StreamUtils.ofSingleNullable(poly).filter(this::isFreeOfDivByZeroProblem).filter(this::isPositiveSqrt)
-				.flatMap(this::rootsOf);
+		if (poly.a == 0)
+			// has problem with division by zero
+			return streamOf();
+
+		double partInSqrt = (poly.b * poly.b / poly.a - poly.c) / poly.a;
+		double term1 = -poly.b / poly.a;
+
+		if (partInSqrt < 0)
+			// no real solution exists
+			return streamOf();
+		if (partInSqrt == 0)
+			// only one solution exists
+			return streamOf(term1);
+		if (poly.c == 0)
+			// avoid numerical problem x-Math.sqrt(x*x) != 0
+			return streamOf(0.0, term1 * 2);
+
+		double term2 = Math.sqrt(partInSqrt);
+		return streamOf(term1 - term2, term1 + term2);
 	}
 
-	private boolean isFreeOfDivByZeroProblem(SecondDegPolynomial poly) {
-		return poly.a != 0;
-	}
-
-	private boolean isPositiveSqrt(SecondDegPolynomial poly) {
-		return partInSqrt(poly) >= 0;
-	}
-
-	private Stream<Double> rootsOf(SecondDegPolynomial poly) {
-		double quota = -poly.b / poly.a;
-		double sqrt = Math.sqrt(partInSqrt(poly));
-		double root1 = quota * (1 - sqrt);
-		double root2 = quota * (1 + sqrt);
-		return Arrays.asList(root1, root2).stream();
-	}
-
-	private double partInSqrt(SecondDegPolynomial poly) {
-		return 1 - poly.c * poly.a / poly.b / poly.b;
+	private Stream<Double> streamOf(Double... roots) {
+		return Arrays.asList(roots).stream();
 	}
 }

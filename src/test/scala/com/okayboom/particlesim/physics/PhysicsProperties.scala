@@ -87,8 +87,29 @@ class PhysicsProperties extends PropertiesToJUnit("Physics") {
 
   @Test
   def collideWorksAsLegacyBug_collideAtTimeZero() {
-    val a = p(v(-1.0, -1.0), v(20.0, 2.0));
-    val b = p(v(1.0, -1.0), v(-11.943185085924132, -15.765249773787602));
+    val a = p(v(0.0, 0.0), v(0.0, 2.0));
+    val b = p(v(2.0, 0.0), v(-11.943185085924132, -15.765249773787602));
+    assert(collideWorksAsLegacy(a, b));
+  }
+
+  @Test
+  def collideWorksAsLegacyBug_secondPolyParamIsZero() {
+    val a = p(v(1.0, -1.0), v(2.0, -2.0));
+    val b = p(v(1.0, 1.0), v(-3.630258016724671, -2.0));
+    assert(collideWorksAsLegacy(a, b));
+  }
+
+  @Test
+  def collideWorksAsLegacyBug_3() {
+    val a = p(v(-1.0, -1.0), v(-2.0, 7.228226294920908));
+    val b = p(v(1.0, 1.0), v(-3.630258016724671, -2.0));
+    assert(collideWorksAsLegacy(a, b));
+  }
+
+  @Test
+  def collideWorksAsLegacyBug_samePosition() {
+    val a = p(v(10.0, 10.0), v(0.0, 0.0));
+    val b = p(v(10.0, 10.0), v(0.0, 5.0));
     assert(collideWorksAsLegacy(a, b));
   }
 }
