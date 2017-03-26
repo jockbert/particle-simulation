@@ -87,61 +87,61 @@ public class Physics {
 	}
 
 	/** The routine interact moves two particles involved in a collision. */
-	public void interact(Particle p1, Particle p2, double t) {
+	public void interact(Particle p1, Particle p2, double time) {
 		double c, s, a, b, tao;
 		Particle p1temp = new Particle(new Vector(0, 0), new Vector(0, 0));
 		Particle p2temp = new Particle(new Vector(0, 0), new Vector(0, 0));
 
-		if (t >= 0) {
+		if (time < 0)
+			return;
 
-			/* Move to impact point */
-			p1 = p1.move(t);
-			p2 = p2.move(t);
+		/* Move to impact point */
+		p1 = p1.move(time);
+		p2 = p2.move(time);
 
-			/* Rotate the coordinate system around p1 */
-			p2temp.position.x = p2.position.x - p1.position.x;
-			p2temp.position.y = p2.position.y - p1.position.y;
+		/* Rotate the coordinate system around p1 */
+		p2temp.position.x = p2.position.x - p1.position.x;
+		p2temp.position.y = p2.position.y - p1.position.y;
 
-			/* Givens plane rotation, Golub, van Loan p. 216 */
-			a = p2temp.position.x;
-			b = p2temp.position.y;
-			if (p2.position.y == 0) {
-				c = 1;
-				s = 0;
+		/* Givens plane rotation, Golub, van Loan p. 216 */
+		a = p2temp.position.x;
+		b = p2temp.position.y;
+		if (p2.position.y == 0) {
+			c = 1;
+			s = 0;
+		} else {
+			if (abs(b) > abs(a)) {
+				tao = -a / b;
+				s = 1 / (Math.sqrt(1 + tao * tao));
+				c = s * tao;
 			} else {
-				if (abs(b) > abs(a)) {
-					tao = -a / b;
-					s = 1 / (Math.sqrt(1 + tao * tao));
-					c = s * tao;
-				} else {
-					tao = -b / a;
-					c = 1 / (Math.sqrt(1 + tao * tao));
-					s = c * tao;
-				}
+				tao = -b / a;
+				c = 1 / (Math.sqrt(1 + tao * tao));
+				s = c * tao;
 			}
-
-			/* This should be equal to 2r */
-			p2temp.position.x = c * p2temp.position.x + s * p2temp.position.y;
-			p2temp.position.y = 0.0;
-
-			p2temp.velocity.x = c * p2.velocity.x + s * p2.velocity.y;
-			p2temp.velocity.y = -s * p2.velocity.x + c * p2.velocity.y;
-			p1temp.velocity.x = c * p1.velocity.x + s * p1.velocity.y;
-			p1temp.velocity.y = -s * p1.velocity.x + c * p1.velocity.y;
-
-			/* Assume the balls has the same mass... */
-			p1temp.velocity.x = -p1temp.velocity.x;
-			p2temp.velocity.x = -p2temp.velocity.x;
-
-			p1.velocity.x = c * p1temp.velocity.x - s * p1temp.velocity.y;
-			p1.velocity.y = s * p1temp.velocity.x + c * p1temp.velocity.y;
-			p2.velocity.x = c * p2temp.velocity.x - s * p2temp.velocity.y;
-			p2.velocity.y = s * p2temp.velocity.x + c * p2temp.velocity.y;
-
-			/* Move the balls the remaining time. */
-			c = 1.0 - t;
-			p1 = p1.move(c);
-			p2 = p2.move(c);
 		}
+
+		/* This should be equal to 2r */
+		p2temp.position.x = c * p2temp.position.x + s * p2temp.position.y;
+		p2temp.position.y = 0.0;
+
+		p2temp.velocity.x = c * p2.velocity.x + s * p2.velocity.y;
+		p2temp.velocity.y = -s * p2.velocity.x + c * p2.velocity.y;
+		p1temp.velocity.x = c * p1.velocity.x + s * p1.velocity.y;
+		p1temp.velocity.y = -s * p1.velocity.x + c * p1.velocity.y;
+
+		/* Assume the balls has the same mass... */
+		p1temp.velocity.x = -p1temp.velocity.x;
+		p2temp.velocity.x = -p2temp.velocity.x;
+
+		p1.velocity.x = c * p1temp.velocity.x - s * p1temp.velocity.y;
+		p1.velocity.y = s * p1temp.velocity.x + c * p1temp.velocity.y;
+		p2.velocity.x = c * p2temp.velocity.x - s * p2temp.velocity.y;
+		p2.velocity.y = s * p2temp.velocity.x + c * p2temp.velocity.y;
+
+		/* Move the balls the remaining time. */
+		double timeLeft = 1.0 - time;
+		p1 = p1.move(timeLeft);
+		p2 = p2.move(timeLeft);
 	}
 }
