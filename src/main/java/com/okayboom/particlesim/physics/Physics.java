@@ -86,14 +86,24 @@ public class Physics {
 		return PolySolver.findRealRoots(a, b, c).filter(isWithinTimeStep).sorted().findFirst();
 	}
 
+	static final class Particles {
+		public final Particle a;
+		public final Particle b;
+
+		Particles(Particle a, Particle b) {
+			this.a = a;
+			this.b = b;
+		}
+	}
+
 	/** The routine interact moves two particles involved in a collision. */
-	public void interact(Particle p1, Particle p2, double time) {
+	public Particles interact(Particle p1, Particle p2, double time) {
 		double c, s, a, b, tao;
 		Particle p1temp = new Particle(new Vector(0, 0), new Vector(0, 0));
 		Particle p2temp = new Particle(new Vector(0, 0), new Vector(0, 0));
 
 		if (time < 0)
-			return;
+			return new Particles(p1, p2);
 
 		/* Move to impact point */
 		p1 = p1.move(time);
@@ -143,5 +153,7 @@ public class Physics {
 		double timeLeft = 1.0 - time;
 		p1 = p1.move(timeLeft);
 		p2 = p2.move(timeLeft);
+
+		return new Particles(p1, p2);
 	}
 }

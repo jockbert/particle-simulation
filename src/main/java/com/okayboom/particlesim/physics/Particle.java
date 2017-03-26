@@ -36,8 +36,7 @@ public final class Particle {
 		final int prime = 31;
 		int result;
 		result = ((position == null) ? 0 : position.hashCode());
-		result = prime * result
-				+ ((velocity == null) ? 0 : velocity.hashCode());
+		result = prime * result + ((velocity == null) ? 0 : velocity.hashCode());
 		return result;
 	}
 
@@ -85,5 +84,10 @@ public final class Particle {
 		Vector diffVelocity = velocity.sub(other.velocity);
 		Vector diffPosition = position.sub(other.position);
 		return Particle.p(diffPosition, diffVelocity);
+	}
+
+	@Deprecated
+	public void mutableMove(double time_step) {
+		position = position.add(velocity.mult(time_step));
 	}
 }

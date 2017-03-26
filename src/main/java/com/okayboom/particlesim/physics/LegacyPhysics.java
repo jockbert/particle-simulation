@@ -50,13 +50,10 @@ public class LegacyPhysics {
 		double a, b, c;
 		double temp, t1, t2;
 
-		a = sqr(p1.velocity.x - p2.velocity.x)
-				+ sqr(p1.velocity.y - p2.velocity.y);
-		b = 2 * ((p1.position.x - p2.position.x)
-				* (p1.velocity.x - p2.velocity.x) + (p1.position.y - p2.position.y)
-				* (p1.velocity.y - p2.velocity.y));
-		c = sqr(p1.position.x - p2.position.x)
-				+ sqr(p1.position.y - p2.position.y) - 4 * 1 * 1;
+		a = sqr(p1.velocity.x - p2.velocity.x) + sqr(p1.velocity.y - p2.velocity.y);
+		b = 2 * ((p1.position.x - p2.position.x) * (p1.velocity.x - p2.velocity.x)
+				+ (p1.position.y - p2.position.y) * (p1.velocity.y - p2.velocity.y));
+		c = sqr(p1.position.x - p2.position.x) + sqr(p1.position.y - p2.position.y) - 4 * 1 * 1;
 
 		if (a != 0.0) {
 			temp = sqr(b) - 4 * a * c;
@@ -88,8 +85,8 @@ public class LegacyPhysics {
 		if (t >= 0) {
 
 			/* Move to impact point */
-			p1 = p1.move(t);
-			p2 = p2.move(t);
+			p1.mutableMove(t);
+			p2.mutableMove(t);
 
 			/* Rotate the coordinate system around p1 */
 			p2temp.position.x = p2.position.x - p1.position.x;
@@ -133,8 +130,8 @@ public class LegacyPhysics {
 
 			/* Move the balls the remaining time. */
 			c = 1.0 - t;
-			p1 = p1.move(c);
-			p2 = p2.move(c);
+			p1.mutableMove(c);
+			p2.mutableMove(c);
 		}
 	}
 }

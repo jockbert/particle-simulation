@@ -70,9 +70,9 @@ class PhysicsProperties extends PropertiesToJUnit("Physics") {
       val bNovus = b.copy();
 
       legacy.interact(aLegacy, bLegacy, time)
-      novus.interact(aNovus, bNovus, time)
+      val particles = novus.interact(aNovus, bNovus, time)
 
-      (aNovus ?= aLegacy) && (bNovus ?= bLegacy)
+      (particles.a ?= aLegacy) && (particles.b ?= bLegacy)
   }
 
   @Test
