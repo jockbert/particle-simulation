@@ -69,7 +69,7 @@ public final class Particle {
 
 	public Particle move(double time_step) {
 		Vector newPosition = position.add(velocity.mult(time_step));
-		return new Particle(newPosition, velocity);
+		return new Particle(newPosition, velocity.copy());
 	}
 
 	public Particle moveUnit() {

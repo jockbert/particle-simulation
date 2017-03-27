@@ -63,14 +63,12 @@ class PhysicsProperties extends PropertiesToJUnit("Physics") {
   property("interact works just as legacy code") = forAll(particles, particles, timeGen) {
     (a: Particle, b: Particle, time: Double) =>
 
+      val particles = novus.interact(a, b, time)
+
       val aLegacy = a.copy();
       val bLegacy = b.copy();
 
-      val aNovus = a.copy();
-      val bNovus = b.copy();
-
       legacy.interact(aLegacy, bLegacy, time)
-      val particles = novus.interact(aNovus, bNovus, time)
 
       (particles.a ?= aLegacy) && (particles.b ?= bLegacy)
   }
