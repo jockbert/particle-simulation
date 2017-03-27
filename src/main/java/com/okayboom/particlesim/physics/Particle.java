@@ -76,6 +76,7 @@ public final class Particle {
 		return new Particle(position.add(velocity), velocity);
 	}
 
+	@Deprecated
 	public Particle copy() {
 		return p(position.copy(), velocity.copy());
 	}

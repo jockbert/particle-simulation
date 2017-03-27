@@ -72,6 +72,7 @@ public final class Vector {
 		return v(x - (other.x), y - (other.y));
 	}
 
+	@Deprecated
 	public Vector copy() {
 		return v(x, y);
 	}
